@@ -1,0 +1,164 @@
+﻿
+(*
+	Handler:
+		BundleAdministration.createBundle bundleName
+	Decription: 
+		This handler is used to create bundle 
+	Parameters: 
+		bundleName - unique bundle name to create           
+	Returns: 
+		n/a
+*)
+to createBundle bundleName
+	BundleAdministration.addBundle
+	BundleAdministration.enterBundleName bundleName
+	BundleAdministration.clickSave		
+end createBundle
+
+(*
+	Handler:
+		BundleAdministration.addBundle
+	Decription: 
+		This handler is used to click on add button while creating bundle
+	Parameters: 
+		n/a
+	Returns: 
+		n/a
+*)			   
+to addBundle
+	if imagefound(ORNInterval.short, text: "Bundle Administration", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (0, 0, .25, .4)) Then
+		click image:"AppAccess/Button_Add",SearchRectangle:ORNScreen.scale (.9, .15, .99, .4)
+	end if
+end addBundle
+
+(*
+	Handler:
+		BundleAdministration.enterBundleName bundleName
+	Decription: 
+		This handler is used to enter bundle name to add
+	Parameters: 
+		bundleName - unique bundle to create           
+	Returns: 
+		n/a
+*)		
+to enterBundleName bundleName
+	if imagefound(ORNInterval.short,text: "AddBundle", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (0, 0, .25, .4) ) Then		
+		TypeText bundleName
+	end if
+end enterBundleName
+
+(*
+	Handler:
+		BundleAdministration.clickSave
+	Decription: 
+		This handler is used click on save button across the application
+	Parameters: 
+		n/a		         
+	Returns: 
+		n/a
+*)		
+to clickSave
+	click image:"AppAccess/Button_Save_Win10", SearchRectangle:ORNScreen.scale (.001, .1, .7, .6)
+end clickSave
+
+(*
+	Handler:
+		BundleAdministration.deleteBundle bundleName
+	Decription: 
+		This handler is used to delete a bundle
+	Parameters: 
+		bundleName - bundle name to delete                  
+	Returns: 
+		n/a
+*)
+to deleteBundle bundleName
+	AppAccessHome.clickOnBundles
+	BundleAdministration.filterBundles bundleName
+	BundleAdministration.selectBundleDelete bundleName	
+	BundleAdministration.confirmBundleDelete
+end deleteBundle	
+
+(*
+	Handler:
+		BundleAdministration.filterBundles bundleName
+	Decription: 
+		This handler is used to filter out the list of bundles
+	Parameters: 
+		bundleName - bundle name to filter         
+      Returns: 
+		n/a
+*)
+to filterBundles bundleName
+	if imagefound(text: "Filter bundles", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.75, .2, .99, .5)) Then
+		click FoundImageLocation()
+		TypeText bundleName	
+	end if
+end filterBundles
+
+(*
+	Handler:
+		BundleAdministration.selectBundleDelete bundleName	
+	Decription: 
+		This handler is used to delete filtered out bundle
+	Parameters: 
+		bundleName - bundle name to delete          
+	Returns: 
+		n/a	
+*)
+to selectBundleDelete bundleName	
+	set bundleRec to imageRectangle(text:bundleName, SearchRectangle:ORNScreen.scale (0, .34, .65, .25)) + (0, -20, 0, 20)
+	set the third item in bundleRec to ConnectionInfo().ScreenSize.x
+	click text:"Delete", SearchRectangle:bundleRec
+end selectBundleDelete
+
+(*
+	Handler:
+		BundleAdministration.confirmBundleDelete
+	Decription: 
+		This handler is used to delete filtered out bundle
+	Parameters: 
+		n/a		        
+     Returns: 
+		n/a	
+*)
+to confirmBundleDelete
+	if imagefound(ORNInterval.short,text: "Are you sure",ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.35, .05, .65, .25)) Then	
+		click( Image:"AppAccess/Button_OK/Button_OK_Win10", SearchRectangle:ORNScreen.scale (.35, .05, .65, .25))	
+	end if	
+end confirmBundleDelete
+
+(*
+	Handler:
+		BundleAdministration.selectBundle bundleName	
+	Decription: 
+		This handler is used to select filtered bundle
+	Parameters: 
+		bundleName - bundle name to select          
+	Returns: 
+		n/a	
+*)
+to selectBundle bundleName	
+	set bundleName to "EggplantBundle"
+	if imagefound(ORNInterval.short,text: bundleName,ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (0, .70, .65, .25)) Then
+		click (text:bundleName, SearchRectangle:ORNScreen.scale (0, .70, .65, .25))
+	end if
+end selectBundle
+
+(*
+	Handler:
+		BundleAdministration.addPositionsToBundle
+	Decription: 
+		This handler is used to add position back to a bundle (to re-set pre-req)
+	Parameters: 
+                 bundleName - bundle name to select
+                 positionName - position name to add		        
+        Returns: 
+		n/a	
+*)
+to addPositionsToBundle bundleName, positionName1
+	AppAccessHome.clickOnBundles
+	BundleAdministration.filterBundles bundleName
+	BundleAdministration.selectBundle bundleName
+	PositionsSubMenu.addPositionToBundle positionName1
+end addPositionsToBundle
+

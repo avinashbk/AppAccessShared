@@ -1,0 +1,47 @@
+﻿
+(*
+	Handler:
+		AppAccessHome.clickOnBundles
+	Description: 
+		This handler is used to click on Bundles from main menu
+	Parameters: 
+		n/a
+	Returns: 
+		n/a		
+*)
+to clickOnBundles
+	if imagefound(image: "AppAccess/MainMenu/Button_MainBundles", Waitfor:10, SearchRectangle:ORNScreen.scale (0, 0, .25, .4) ) Then
+		click FoundImageLocation()		
+	end if
+end clickOnBundles	
+
+(*
+	Handler:
+		AppAccessHome.logOutFromAppAccess	
+	Description: 
+		This handler is used to logout from app access application
+	Parameters: 
+		n/a
+	Returns: 
+		n/a		
+*)
+to logOutFromAppAccess
+	if imagefound( ORNInterval.short, text: "Log Out", SearchRectangle:ORNScreen.scale (.75, .003, 1, .15) ) Then
+		click FoundImageLocation()
+	end if
+end logOutFromAppAccess
+
+(*
+	Handler:
+		AppAccessHome.mockLoginFields	
+	Description: 
+		This handler is used to enter mock login fields for non-mellennium user
+	Parameters: 
+		field, value	
+	Returns: 
+		n/a
+*)
+to mockLoginFields field, value
+	click ImageLocation(text:field,SearchRectangle:ORNScreen.scale(0,0,.5,1))+(136,0)
+	TypeText value
+end mockLoginFields

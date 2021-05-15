@@ -1,0 +1,94 @@
+﻿
+(*
+	Handler:
+		Applications.addToBundle appName
+	Decription: 
+		This handler is used to add application to bundle
+	Parameters: 
+             appName - Application to add to the bundle        
+	Returns: 
+		n/a
+*)
+to addToBundle appName
+	Applications.modify
+	Applications.filter appName
+	Applications.selectAppToAdd appName
+	BundleAdministration.clickSave            
+end addToBundle
+
+(*
+	Handler:
+		Applications.modify
+	Decription: 
+		This handler is used to click on modify button while adding application to bundle
+	Parameters: 
+		n/a
+	Returns: 
+		n/a
+*)
+to modify
+	if imagefound(ORNInterval.short,text: "Assigned Applications", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.001, .2, .3, .6)) Then
+		click text:"Modify", SearchRectangle:ORNScreen.scale (.001, .2, .3, .6)
+	else
+		throw exception "Modify button not found", "Modify button not found"
+	end if	
+end modify
+
+(*
+	Handler:
+		Applications.filter appName
+	Decription: 
+		This handler is used to filter applications while adding appliciation to bundle
+	Parameters: 
+		appName - application to filter to add to bundle                  	
+        Returns: 
+		n/a
+*)
+to filter appName
+	if imagefound(ORNInterval.short, text: "Filter application", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.75, .2, .99, .5)) Then
+		click FoundImageLocation()
+		TypeText appName
+	else
+		throw exception "Filter application not found", "Filter application not found"	
+	end if
+end filter
+
+(*
+	Handler:
+		Applications.selectAppToAdd appName
+	Decription: 
+		This handler is used to select filtered app to add to the bundle
+	Parameters: 
+		appName - application to filter in order to add to bundle                  	
+	Returns: 
+		n/a
+*)
+to selectAppToAdd appName
+	if imagefound(ORNInterval.short, text: "Assigned Applications", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.01, .2, .3, .6)) Then
+		put ImageRectangle(waitfor:10, text: appName, SearchRectangle:ORNScreen.scale (.01, .2, .3, .6)) into appRectangle
+		set imageLeft = left(appRectangle)	
+		set startLeft = imageLeft - 56
+		set imageTop = top(appRectangle)
+		set startTop = imageTop + 4		
+		set loc = (StartLeft,StartTop)	
+		click  loc	
+	else
+		throw exception "Application to add to bundle not found", "Appllcation to add to bundle not found"
+	end if	
+end selectAppToAdd	
+
+(*
+	Handler:
+		Applications.addApplication appName
+	Decription: 
+		This handler is used to modify a bundle by adding an application to it
+	Parameters: 
+		appName		 
+	Returns: 
+		n/a	
+*)
+to addApplication appName
+	click image:"AppAccess/Button_Modify_Win10"
+	BundleAdministration.filterBundles appName
+	set bundleRec to imageRectangle(text:appName) + (0, -20, 0, 20)
+end addApplication	

@@ -1,0 +1,177 @@
+﻿
+(*
+	Handler:
+		PositionsMainMenu.addBundleToPosition positionName2, bundleName
+	Decription: 
+		This handler is used to add bundle to a position from the main menu
+	Parameters: 
+		positionName2 - position for which bundle needed to add
+		bundleName - bundle to add to the position  
+	Returns: 
+		n/a
+*)
+to addBundleToPosition positionName2,bundleName
+	PositionsMainMenu.clickOnPosition
+	PositionsMainMenu.filterPositions positionName2
+	PositionsMainMenu.selectPosition positionName2
+	PositionsMainMenu.selectPosition positionName2
+	PositionsMainMenu.modify positionName2
+	PositionsMainMenu.filterBundle bundleName
+	PositionsMainMenu.selectBundleToAdd bundleName
+	BundleAdministration.clickSave    
+end addBundleToPosition
+
+(*
+	Handler:
+		PositionsMainMenu.clickOnPosition
+	Decription: 
+		This handler is used to click on a positons from the main menu
+	Parameters: 
+		n/a                     
+	Returns: 
+		n/a
+*)
+to clickOnPosition
+	if imagefound(ORNInterval.short, Image: "AppAccess/MainMenu/Button_MainPositions", SearchRectangle:ORNScreen.scale (0, .15, .25, .25) ) Then
+		click FoundImageLocation()
+	end if
+end clickOnPosition
+
+(*
+	Handler:
+		PositionsMainMenu.filterPositions positionName
+	Decription: 
+		This handler is used to filter the list of positons from the main menu
+	Parameters: 
+		positionName - position to filter from the list                  
+	Returns: 
+		n/a
+*)
+to filterPositions positionName
+	if imagefound(ORNInterval.short, text: "Filter positions", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.75, .2, .99, .5)) Then
+		click FoundImageLocation()
+		TypeText positionName	
+	end if
+end filterPositions
+
+(*
+	Handler:
+		PositionsMainMenu.selectPosition positionName
+	Decription: 
+		This handler is used to select the postion form the list of filtering from the main menu
+	Parameters: 
+		positionName - position to select             
+	Returns: 
+		n/a
+*)
+to selectPosition positionName
+	if imagefound(waitfor:ORNInterval.medium, text: positionName,ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.01, .2, .4, .7)) Then
+		click FoundImageLocation()
+	end if
+end selectPosition
+
+(*
+	Handler:
+		PositionsMainMenu.modify positionName	
+	Decription: 
+		This handler is used to validate position page, scroll down to the page and click on modify
+	Parameters: 
+		positionName - position to select            
+	Returns: 
+		n/a
+*)
+to modify positionName
+	if ImageFound(waitfor:ORNInterval.medium, text:positionName, SearchRectangle:ORNScreen.scale(.002, .15, .5, .6)) Then
+		wait 3 // This wait period is required for finding the positon name on the screen before scoll down
+		typetext endKey
+		Click (waitfor:10, text: "Modify", ignoreSpaces:yes, ignorecase:yes, SearchRectangle:ORNScreen.scale(.002, .3, .3, .9))	
+	end if	
+end modify
+
+(*
+	Handler:
+		PositionsMainMenu.filterBundle bundleName	
+	Decription: 
+		This handler is used to filter down bundles
+	Parameters: 
+		bundleName - bundle to filter                   	
+	Returns: 
+		n/a
+*)
+to filterBundle bundleName	
+	if imagefound(waitfor:ORNInterval.short,text: "Filter bundles", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.75, .2, .99, .5)) Then	
+		click FoundImageLocation()
+		TypeText bundleName
+	end if
+end filterBundle	
+
+(*
+	Handler:
+		PositionsMainMenu.selectBundleToAdd bundleName	
+	Decription: 
+		This handler is used to select filtered bundles to add to the positions
+	Parameters: 
+		bundlename - bundle to filter
+	Returns: 
+		n/a
+*)
+to selectBundleToAdd bundleName
+	if imagefound(ORNInterval.short, text: "Assigned Bundles", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.01, .2, .4, .7)) Then
+		put ImageRectangle(waitfor:15, text:bundleName, SearchRectangle:ORNScreen.scale (.01, .2, .4, .7)) into initRectangle
+		set imageLeft = left(initRectangle)	
+		set startLeft = imageLeft - 32
+		set imageTop = top(initRectangle)
+		set startTop = imageTop + 10		
+		set loc = (StartLeft,StartTop)	
+		click  loc				
+	else		
+		throw exception "Bundle not found from positions main page","Bundle not found from positions main page"
+	end if	
+end selectBundleToAdd	
+
+(*
+	Handler:
+		PositionsMainMenu.selectRemovePosition positionName
+	Decription: 
+		This handler is used to remove filtered out positions
+	Parameters: 
+		Name - positionName        
+	Returns: 
+		n/a	
+*)
+to selectRemovePosition positionName	
+set userRec to imageRectangle(text:positionName,SearchRectangle: ORNScreen.scale (0, .34, .65, .25)) + (0, -20, 0, 20)
+set the first item in userRec to ConnectionInfo().ScreenSize.x
+click text:"Remove", SearchRectangle:userRec
+end selectRemovePosition
+
+(*
+	Handler:
+		PositionsMainMenu.confirmRemovePosition
+	Decription: 
+		This handler is used to remove filtered out positions
+	Parameters: 
+		n/a     
+	Returns: 
+		n/a	
+*)
+to confirmRemovePosition
+	if imagefound(ORNInterval.short, text: "Are you sure", SearchRectangle:ORNScreen.scale (.35, .05, .65, .25))Then
+		click( Image:"AppAccess/Button_OK/Button_OK_Win10", SearchRectangle:ORNScreen.scale (.35, .05, .65, .25))	
+	end if	
+end confirmRemovePosition
+
+(*
+	Handler:
+		PositionsMainMenu.removePositionFromMainTab positonName
+	Decription: 
+		This handler is used to remove a position
+	Parameters: 
+		Name - positionName to remove                
+	Returns: 
+		n/a
+*)
+to removePositionFromMainTab positionName
+	PositionsMainMenu.selectRemovePosition positionName
+	PositionsMainMenu.confirmRemovePosition
+end removePositionFromMainTab	

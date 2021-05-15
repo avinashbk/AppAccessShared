@@ -1,0 +1,198 @@
+﻿
+(*
+	Handler:
+		UsersSubMenu.addUserToBundle user
+	Decription: 
+		This handler is used to add a user to the bundle from sub menu
+	Parameters: 
+		user - user to add to the bundle
+	Returns: 
+		n/a
+*)
+to addUserToBundle user, realm
+	UsersSubMenu.clickOnUsers 
+	
+	// Check if realm option displays
+	if ImageFound(text:"Realm", waitFor: ORNInterval.medium, SearchRectangle: ORNScreen.leftHalf)
+		Click text: realm, SearchRectangle: ORNScreen.leftHalf
+	end if
+	UsersSubMenu.enterUser user
+	UsersSubMenu.addUser
+end addUserToBundle
+
+(*
+	Handler:
+		UsersSubMenu.clickOnUsers
+	Decription: 
+		This handler is used to click on user from sub menu
+	Parameters: 
+		n/a
+	Returns: 
+		n/a
+*)
+to clickOnUsers 
+	if imagefound(waitfor:ORNInterval.short, text: "Users",ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (0, .25, .25, .4) ) Then
+		click FoundImageLocation()		
+	end if
+end clickOnUsers
+
+(*
+	Handler:
+		UsersSubMenu.enterUser user
+	Decription: 
+		This handler is used to enter user name to to add to the bundle
+	Parameters: 
+		user - user to add to the bundle                                
+	Returns: 
+		n/a
+*)
+to enterUser user
+	if imagefound(waitfor:ORNInterval.short, text: "Assigned Users",ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (0, .4, .35, .7) ) Then
+		Click ImageLocation(text:"Username") + (0,35)
+		TypeText user
+	else	
+		throw exception "Add button not found", "Add button not found"
+	end if
+end enterUser
+
+(*
+	Handler:
+		UsersSubMenu.addUser
+	Decription: 
+		This handler is used to click on add button to add user to bundle
+	Parameters: 
+		n/a	                            
+	Returns: 
+		n/a
+*)
+to addUser
+	if imagefound(waitfor:ORNInterval.short, text: "Assigned Users",ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (0, .2, .3, .6)) Then
+		click (Image:"AppAccess/Button_Add", SearchRectangle:ORNScreen.scale (0, .2, .3, .6) )
+	end if
+	WaitFor ORNInterval.long, text:"Remove"
+end addUser
+
+(*
+	Handler:
+		UsersSubMenu.selectRemoveUser userName
+	Decription: 
+		This handler is used to remove filtered out users
+	Parameters: 
+		userName - user name to remove.            
+	Returns: 
+		n/a	
+*)
+to selectRemoveUser userName		
+	put EveryImageRectangle(text:userName) into nameList
+	put the second item in nameList into userRec	
+	set the third item in userRec to ConnectionInfo().ScreenSize.x
+	click text:"Remove", SearchRectangle: userRec
+end selectRemoveUser	
+
+(*
+	Handler:
+		UsersSubMenu.confirmRemoveUser
+	Decription: 
+		This handler is used to remove filtered out users
+	Parameters: 
+		n/a		         
+	Returns: 
+		n/a	
+*)
+to confirmRemoveUser
+	if imagefound(waitfor:ORNInterval.short,text: "Are you sure", SearchRectangle:ORNScreen.scale (.35, .05, .65, .25)) Then
+		click( Image:"AppAccess/Button_OK/Button_OK_Win10", SearchRectangle:ORNScreen.scale (.35, .05, .65, .25))	
+	end if	
+end confirmRemoveUser
+
+(*
+	Handler:
+		UsersSubMenu.removeUserFromSubMenu userName
+	Decription: 
+		This handler is used to remove a user
+	Parameters: 
+		userName - user name to remove                   
+	Returns: 
+		n/a
+*)
+to removeUserFromSubMenu userName
+	UsersSubMenu.filterUsers userName
+	UsersSubMenu.selectRemoveUser userName	
+	UsersSubMenu.confirmRemoveUser
+end removeUserFromSubMenu	
+
+
+(*
+	Handler:
+		UsersSubMenu.filterUsers userName
+	Decription: 
+		This handler is used to filter out the list of users
+	Parameters: 
+		bundleName - user name to filter           
+	Returns: 
+		n/a
+*)
+to filterUsers userName
+	if imagefound(ORNInterval.long, text: "Filter users", SearchRectangle:ORNScreen.scale (.75, .2, .99, .7)) Then
+		click FoundImageLocation()
+		TypeText userName	
+	end if
+end filterUsers
+
+(*
+	Handler:
+		UsersSubMenu.addSubMenuUserToBundle user
+	Decription: 
+		This handler is used to add a user to the bundle from sub menu
+	Parameters: 
+               user - user to add to the bundle                    
+	Returns: 
+		n/a
+*)
+to addSubMenuUserToBundle user
+	UsersSubMenu.clickOnUsers 
+	UsersSubMenu.clickOnRealmId
+	UsersSubMenu.enterUser user
+	UsersSubMenu.addUser
+end addSubMenuUserToBundle
+
+(*
+	Handler:
+		UsersSubMenu.clickOnRealmId
+	Decription: 
+		This handler is used to click on user from sub menu
+	Parameters: 
+		n/a
+	Returns: 
+		n/a
+*)
+to clickOnRealmId 
+	if imagefound(ORNInterval.short, text: "Realm",ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (0, .25, .25, .4) ) Then
+		Click (image :"AppAccess/Button_Radio_NotSelected",SearchRectangle:ORNScreen.scale (0, .25, .25, .6) )
+	end if
+end clickOnRealmId
+
+(*
+	Handler:
+		UsersSubMenu.validateRealm
+	Decription: 
+		This handler validates if default realm is selected if there is single realm available. Or no realm selected if there are more than one available realm
+	Parameters: 
+		n/a                                   
+	Returns: 
+		True
+*)
+to validateRealm
+	put the number of items of EveryImageLocation("AppAccess/Button_Radio_NotSelected") into realmCount
+	if ImageFound(ORNInterval.small, Image:"AppAccess/Button_Radio_Selected", SearchRectangle:ORNScreen.scale (0, .1, .2, .6)) then
+		Log "Contains single realm - Default realm selected"
+		return True
+	else if  realmCount >1 and not ImageFound(ORNInterval.small, Image:"AppAccess/Button_Radio_Selected", SearchRectangle:ORNScreen.scale (0, .1, .2, .6))  then
+		Log "Contains more than one realm - No realm selected"	
+		return True	
+	else if realmCount >1 and ImageFound(ORNInterval.small, Image:"AppAccess/Button_Radio_Selected", SearchRectangle:ORNScreen.scale (0, .1, .2, .6))  then	
+		throw exception "Default realm is selected with more than one realm is listed"			
+	else	
+		throw exception "Realm(s) not listed under user sub menu"	
+	end if	
+end validateRealm

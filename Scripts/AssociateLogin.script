@@ -1,0 +1,58 @@
+(*
+	Handler:
+	        AssociateLogin.associateLogin(username, password)
+
+	Description: 
+		Accepting input fed as paramters for username and password and performing login action
+
+	Parameters: 
+                username - Paramter for username field
+
+                password - Paramter for password
+                    
+        Returns: n/a
+*)
+
+to associateLogin username, password
+
+	waitfor 30, text:"Sign in"
+	
+	typetext escapeKey
+	
+	waitfor 30,text:"Associate Log In"
+	
+	TypeText username, tabKey
+	
+	TypeText password, returnKey
+	
+end associateLogin
+
+(*
+	Handler:
+		AssociateLogin.selectRealm(name,username, password)
+
+	Description: 
+		Accepting input fed as paramters for name,username and password and perform the realm selection
+
+	Parameters: 
+                name - Realm to be selected
+
+                username - Paramter for username field
+
+                password - Paramter for password
+                    
+        Returns: n/a
+*)
+
+to selectRealm name,username,password
+	if name is "Engineering"
+		click text: "Engineering"
+		ORNLogin.millenniumPlusLogin  username, password
+	else if name is "Associates"
+		click text: "Associates"
+		AssociateLogin.associateLogin  username, password
+	else
+		log name + " is not a valid realm"
+	end if
+	
+end selectRealm

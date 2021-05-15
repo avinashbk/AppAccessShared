@@ -1,0 +1,208 @@
+﻿
+(*
+	Handler:
+		UsersMainMenu.addUserToPosition userName,bundleName
+	Decription: 
+		This handler is used to add bundle to a user from the main menu. 
+	Parameters: 
+             userName - user for which bundle needed to add. 
+		bundleName - bundle to add to the position.                    
+        Returns: n/a
+*)
+to addUserToPosition userName,bundleName
+	UsersMainMenu.clickOnUser
+	UsersMainMenu.filterUsers userName
+	UsersMainMenu.selectUser userName	
+	UsersMainMenu.modify userName
+	PositionsMainMenu.filterBundle bundleName
+	PositionsMainMenu.selectBundleToAdd bundleName
+	BundleAdministration.clickSave    
+end addUserToPosition
+
+(*
+	Handler:
+		UsersMainMenu.clickOnUser
+	Decription: 
+		This handler is used to click on a users from the main menu.
+	Parameters: 
+		n/a                 
+      Returns: 
+		n/a
+*)
+to clickOnUser
+	if imagefound(ORNInterval.short, Image:"AppAccess/MainMenu/Button_MainUsers")
+		click FoundImageLocation()
+	end if	
+end clickOnUser
+
+(*
+	Handler:
+		UsersMainMenu.filterUsers userName
+	Decription: 
+		This handler is used to filter the list of users from the main menu.
+	Parameters: 
+		userName - user to filter from the list.          
+	Returns: 
+		n/a
+*)
+to filterUsers userName
+	if imagefound(ORNInterval.short, text: "Filter users", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.75, .2, .99, .5)) Then	
+		click FoundImageLocation()
+		TypeText userName	
+	else		
+		throw exception "Filter user not found", "Filter user not found"
+	end if
+end filterUsers 
+
+(*
+	Handler:
+		UsersMainMenu.selectUser userName	
+	Decription: 
+		This handler is used to select the user after filtering
+	Parameters: 
+		userName - user to select          
+	Returns:
+		n/a
+*)
+to selectUser userName	
+	Wait 4 // waiting to filter the username
+	if imagefound(ORNInterval.short, text: userName, ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.01, .2, .4, .7)) Then
+		click FoundImageLocation()	
+	end if
+end selectUser
+
+(*
+	Handler:
+		UsersMainMenu.modify userName	
+	Decription: 
+		This handler is used to validate position page, scroll down to the page and click on modify button
+	Parameters: 
+		userName - user to select              
+	Returns: 
+		n/a
+*)
+to modify userName
+	if ImageFound(ORNInterval.short, text:userName, SearchRectangle:ORNScreen.scale(.002, .15, .5, .6)) then
+		wait 3 // This wait period is required for finding the user name on the screen before scoll down
+		typetext endKey
+		Click (text: "Modify", ignoreSpaces:yes,ignorecase:yes, SearchRectangle:ORNScreen.scale(.002, .3, .3, 1))
+	else	
+		throw exception," Modify button not found in user main menu"," Modify button not found in user main menu"
+	end if	
+end modify
+
+(*
+	Handler:
+		UsersMainMenu.selectRemoveUser userName
+	Decription: 
+		This handler is used to remove filtered out users
+	Parameters: 
+		userName - user name to remove         
+	Returns: 
+		n/a	
+*)
+to selectRemoveUser userName	
+	set userRec to imageRectangle(text:userName,SearchRectangle:ORNScreen.scale (0, .34, .65, .25)) + (0, -20, 0, 20)
+	set the third item in userRec to ConnectionInfo().ScreenSize.x
+	click text:"Remove", SearchRectangle:userRec
+end selectRemoveUser
+
+(*
+	Handler:
+		UsersMainMenu.confirmRemoveUser
+	Decription: 
+		This handler is used to confirm and remove users
+	Parameters: 
+		n/a     
+	Returns: 
+		n/a	
+*)
+to confirmRemoveUser
+	if imagefound(ORNInterval.short,text: "Are you sure", SearchRectangle:ORNScreen.scale (.35, .05, .65, .25)) Then
+		click( Image:"AppAccess/Button_OK/Button_OK_Win10", SearchRectangle:ORNScreen.scale (.35, .05, .65, .25))	
+	end if	
+end confirmRemoveUser
+
+(*
+	Handler:
+		UsersMainMenu.removeUserFromMainMenu userName
+	Decription: 
+		This handler is used to remove a user
+	Parameters: 
+		UserName - userName to remove                   
+	Returns: 
+		n/a
+*)
+to removeUserFromMainMenu userName
+	UsersMainMenu.clickOnUser
+	UsersMainMenu.filterUsers userName
+	UsersMainMenu.selectRemoveUser userName	
+	UsersMainMenu.confirmRemoveUser
+end removeUserFromMainMenu	
+
+(*
+	Handler:
+		UsersMainMenu.reassignUser userName
+	Decription: 
+		This handler is used to reassign user and reset prerequiste
+	Parameters: 
+		UserName - userName to reassign                 
+	Returns:
+		n/a
+*)
+to reassignUser userName
+	UsersMainMenu.clickOnUser
+	Click "AppAccess/Button_Assign_Win10"
+	if imagefound(ORNInterval.short, text: "Realm",ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (0, .25, .25, .4) ) Then
+		Click (image :"AppAccess/Button_Radio_NotSelected",SearchRectangle:ORNScreen.scale (0, .25, .25, .6) )
+	end if
+	UsersMainMenu.enterUser userName
+	WaitFor 10, "AppAccess/Button_ModifyUser_Win10"
+	Click (image:"AppAccess/Button_ModifyUser_Win10")
+	waitFor 10, "AppAccess/Button_Modify_Win10"
+	Click (image:"AppAccess/Button_Modify_Win10")
+	UsersMainMenu.clickSave 
+end reassignUser
+
+(*
+	Handler:
+		UsersMainMenu.enterUser userName
+	Decription: 
+		This handler is used to enter user name in the designated test area.
+	Parameters:
+		userName - User name to add      
+	Returns:
+		n/a
+*)
+to enterUser userName
+	if imagefound(ORNInterval.short, text: "Enter username",ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (0, .2, .25, .5) ) Then
+		Click ImageLocation(text:"Enter username") + (20,20)
+		TypeText userName
+	else
+		throw exception "User not found", "User not found"
+	end if
+end enterUser
+
+(*
+	Handler:
+		UsersMainMenu.clickSave
+	Decription: 
+		This handler is used click save button and reset user prerequisite
+	Parameters: 
+		n/a	
+	Returns: 
+		n/a
+*)		
+to clickSave
+	if not imageFound(image:"AppAccess/Button_Save_Win10") Then
+		repeat until imagefound (ORNInterval.short, image:"AppAccess/Button_Save_Win10")
+			typetext pageDown
+			if imagefound (ORNInterval.short, "AppAccess/Image_ScrollBar_Win10")
+				Log "Save button not found"
+			end if
+		end repeat
+		Click "AppAccess/Button_Save_Win10"
+	else
+		throw exception "Save button not found", "Save button not found"
+	end if
+end clickSave

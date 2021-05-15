@@ -1,0 +1,20 @@
+﻿{
+    CaptureDate = "2019-09-28 05:32:22 +0000";
+    CaptureHost = "10.171.196.116";
+    CaptureScreenSize =     (
+        1920,
+        1080
+    );
+    HasAlpha = 1;
+    HotSpotX = 9;
+    HotSpotY = 8;
+    LastKnownLocationX = 0;
+    LastKnownLocationY = 0;
+    OriginalLocationX = 33;
+    OriginalLocationY = 414;
+    Precise = 0;
+    Pulsing = 0;
+    Scale = 1;
+    tags =     (
+    );
+}

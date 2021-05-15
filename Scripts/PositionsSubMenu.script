@@ -1,0 +1,59 @@
+﻿
+(*
+	Handler:
+		PositionsSubMenu.addPositionToBundle positionName1	
+	Decription: 
+		This handler is used to add positon to the bundle from sub menu
+	Parameters: 
+		positionName1 - Position to add to the bundle                    
+	Returns: 
+		n/a
+*)
+to addPositionToBundle positionName1
+	click (waitfor:ORNInterval.short, text:"Positions", SearchRectangle:ORNScreen.scale (0, .25, .25, .4))
+	PositionsSubMenu.modify 
+	PositionsMainMenu.filterPositions positionName1
+	PositionsSubMenu.selectPositionToAdd positionName1
+	BundleAdministration.clickSave    
+end addPositionToBundle
+
+(*
+	Handler:
+		PositionsSubMenu.modify	
+	Decription: 
+		This handler is used to verify assigned postions page and scroll down to the page and click on modify button
+	Parameters: 
+		n/a		  	
+	Returns: 
+		n/a
+*)
+to modify 
+	if ImageFound(waitfor:ORNInterval.short, text:"Assigned Positions", SearchRectangle:ORNScreen.scale(.002, .15, .5, .6)) Then
+		typetext endKey
+		Click (waitfor:10, text: "Modify", ignoreSpaces:yes, ignorecase:yes, SearchRectangle:ORNScreen.scale(.002, .3, .3, .9))	
+	end if	
+end modify
+
+(*
+	Handler:
+		PositionsSubMenu.selectPositionToAdd positionName
+	Decription: 
+		This handler is used to verify assigned postions page and scroll down to the page and click on modify button
+	Parameters: 		 
+		positionName - postion to add to bundle 
+	Returns: 
+		n/a
+*)
+to selectPositionToAdd positionName
+	if imagefound(waitfor:ORNInterval.short, text: "Assigned Positions", ignoreSpaces:Y, ignorecase:Y, SearchRectangle:ORNScreen.scale (.01, .2, .4, .7)) Then
+		put ImageRectangle(waitfor:ORNInterval.short, text:positionName, SearchRectangle:ORNScreen.scale (.01, .2, .4, .7)) into initRectangle
+		set imageLeft = left(initRectangle)	
+		set startLeft = imageLeft - 32
+		set imageTop = top(initRectangle)
+		set startTop = imageTop + 10		
+		set loc = (startLeft,startTop)	
+		click  loc				
+	else			
+		throw exception "Position not found under sub menu after filtering", "Position not found under sub menu after filtering"	
+	end if	
+end selectPositionToAdd	

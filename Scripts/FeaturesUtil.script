@@ -1,0 +1,80 @@
+﻿(**
+	Handler: 
+ 		FeaturesUtil.searchFeature featureName
+	
+	Description:
+		Search the feature in the Features tab using filter
+
+	Parameters:
+		featureName - parameter to enter featureName
+
+	Returns:
+		n/a
+**)
+to searchFeature featureName
+	WaitFor 30,"FeatureManager/Icon_FilterFeature"
+	Click FoundImageLocation()
+	TypeText featureName
+end searchFeature
+
+(**
+	Handler: 
+ 		FeaturesUtil.addUser userName
+		
+	Description:
+		Select the feature from the table 
+
+	Parameters:
+		username - paramerter to enter userName
+
+	Returns:
+		n/a
+**)
+to addUser userName
+	Click (text:"Assigned Users")
+	Click Text:"Username", hotspot:(5,30)
+	TypeText userName
+	click "FeatureManager/Button_Assign"
+end addUser
+
+
+(**
+	Handler:
+ 		FeaturesUtil.addUserWithRealm userName, realm
+
+	Description:
+		add a username and select realm
+
+	Parameters:
+		username - Parameter to enter userName
+                realm - Parameter to select realm
+
+	Returns:
+		n/a
+**)
+to addUserWithRealm userName, realm
+	Click (text:"Assigned Users")
+	Click text:realm
+	Click Text:"Username", hotspot:(5,30)
+	TypeText controlKey & a
+	TypeText userName
+	click "FeatureManager/Button_Assign"
+end addUserWithRealm
+
+(**
+	Handler: 
+ 		FeaturesUtil.closeNotification
+		
+	Description:
+		To close the Notification
+
+	Parameters:
+		n/a
+
+	Returns:
+		n/a
+**)
+to closeNotification
+	Click "FeatureManager/Icon_Close_Notification"
+	wait 3
+end closeNotification

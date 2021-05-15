@@ -1,0 +1,22 @@
+﻿{
+    CaptureDate = "2019-05-16 08:33:43 +0000";
+    CaptureHost = Windows;
+    CaptureScreenSize =     (
+        1920,
+        1080
+    );
+    HasAlpha = 1;
+    HotSpotX = 66;
+    HotSpotY = 10;
+    ImageDescription = <>;
+    LastKnownLocationX = 0;
+    LastKnownLocationY = 0;
+    OriginalLocationX = 1737;
+    OriginalLocationY = 266;
+    Precise = 0;
+    Pulsing = 0;
+    Scale = 1;
+    SearchAlgorithm = TextSmoothSquare;
+    tags =     (
+    );
+}
